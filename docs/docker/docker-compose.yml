@@ -13,7 +13,9 @@ services:
       - MYSQL_PASSWORD=spug.cc
       - MYSQL_ROOT_PASSWORD=spug.cc
   spug:
-    image: openspug/spug-service:4.0.0
+    # 镜像只包含运行环境（Python/Django 4.2 等），按 4.0 大版本维护；具体代码版本由下面的
+    # SPUG_DOCKER_VERSION 决定，4.0.x 的补丁版本只需改该变量，不必换镜像
+    image: openspug/spug-service:4.0
     container_name: spug
     privileged: true
     restart: always
@@ -26,9 +28,9 @@ services:
     environment:
       # 代码版本（git 标签名），容器首次启动时按此值从 gitee 拉取代码并下载
       # 同名前端产物 https://cdn.spug.cc/spug/web_${SPUG_DOCKER_VERSION}.tar.gz，
-      # 因此标签、CDN 文件名与镜像标签三者必须配套。4.0.0 镜像预装 Django 4.2 /
-      # channels 4，只能运行 4.x 代码，不能用于 3.x 版本。
-      - SPUG_DOCKER_VERSION=v4.0.0
+      # 因此标签与 CDN 文件名必须配套。4.0 镜像预装 Django 4.2 / channels 4，
+      # 只能运行 4.x 代码，不能用于 3.x 版本。
+      - SPUG_DOCKER_VERSION=v4.0.1
       - MYSQL_DATABASE=spug
       - MYSQL_USER=spug
       - MYSQL_PASSWORD=spug.cc
