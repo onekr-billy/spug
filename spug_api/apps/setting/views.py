@@ -37,6 +37,9 @@ class SettingView(AdminView):
         for item in Setting.objects.all():
             if item.key in self.MASK_KEYS:
                 response[item.key] = _mask_secret(item.real_val)
+            elif item.key == 'ldap_service':
+                # 3.x 升级上来的旧格式配置按 4.0 的字段回显，保存一次即完成格式迁移
+                response[item.key] = LDAP.normalize_config(item.real_val) or item.real_val
             else:
                 response[item.key] = item.real_val
         return json_response(response)
@@ -93,7 +96,6 @@ def ldap_test(request):
         Argument('map_username'),
         Argument('map_nickname'),
     ).parse(request.body)
-    print('form', form)
     if error is None:
         ldap = LDAP(form.server, form.admin_dn, form.admin_password, form.user_ou, form.user_filter, form.map_username, form.map_nickname)
         status, ret = ldap.all_user()
@@ -122,7 +124,8 @@ def ldap_import(request):
 
 class LDAPUserView(AdminView):
     def get(self, request):
-        ldap_config = AppSetting.get('ldap_service')
+        # 不能用 AppSetting.get：它带 lru_cache，重新保存 LDAP 配置后拿到的仍是旧值
+        ldap_config = LDAP.normalize_config(AppSetting.get_default('ldap_service'))
         if not ldap_config:
             return json_response(error='LDAP服务未配置')
         ldap = LDAP(**ldap_config)

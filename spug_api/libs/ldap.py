@@ -6,9 +6,10 @@ from ldap.filter import escape_filter_chars
 
 
 class LDAP:
+    REQUIRED_KEYS = ('server', 'admin_dn', 'admin_password', 'user_ou', 'user_filter', 'map_username', 'map_nickname')
+
     def __init__(self, server, admin_dn, admin_password, user_ou, user_filter, map_username, map_nickname):
         self.server = server
-        self.admin_dn = admin_dn
         self.admin_dn = admin_dn
         self.admin_password = admin_password
         self.user_ou = user_ou
@@ -16,6 +17,34 @@ class LDAP:
         self.map_username = map_username
         self.map_nickname = map_nickname
 
+    @classmethod
+    def normalize_config(cls, config):
+        """把系统设置里的 ldap_service 整理成 4.0 的参数格式，返回 None 表示尚未配置或配置不完整。
+
+        3.x 存的是 {server, port, rules, admin_dn, password, base_dn}，从 3.x 升级后直接 LDAP(**config)
+        会因为多出来的 port 等参数抛 TypeError，导致 LDAP 登录报 Exception。这里按 3.x 的语义自动换算：
+        server:port -> ldap://server:port，base_dn -> 用户 OU，rules（搜索属性）-> 登录名/姓名映射，
+        这样升级后不重新配置也能登录；用户在系统设置里重新保存后即为 4.0 格式。
+        """
+        if not isinstance(config, dict) or not config:
+            return None
+        if 'admin_password' not in config and any(k in config for k in ('port', 'rules', 'base_dn')):
+            server = str(config.get('server') or '').strip()
+            if server and '://' not in server:
+                server = f'ldap://{server}:{config.get("port") or 389}'
+            attr = str(config.get('rules') or 'cn').strip()
+            config = {
+                'server': server,
+                'admin_dn': config.get('admin_dn'),
+                'admin_password': config.get('password'),
+                'user_ou': config.get('base_dn'),
+                'user_filter': f'({attr}=*)',
+                'map_username': attr,
+                'map_nickname': attr,
+            }
+        if not all(config.get(k) for k in cls.REQUIRED_KEYS):
+            return None
+        return {k: config[k] for k in cls.REQUIRED_KEYS}
 
     def connect(self):
         try:

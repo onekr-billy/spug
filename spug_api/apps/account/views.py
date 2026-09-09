@@ -109,7 +109,7 @@ class RoleView(AdminView):
             if form.id:
                 Role.objects.filter(pk=form.id).update(**form)
             else:
-                Role.objects.create(created_by=request.user, **form)
+                Role.objects.create(**form)
         return json_response(error=error)
 
     def patch(self, request):
@@ -194,7 +194,7 @@ def login(request):
         if user and not user.is_active:
             return handle_response(error="账户已被系统禁用")
         if form.type == 'ldap':
-            config = AppSetting.get_default('ldap_service')
+            config = LDAP.normalize_config(AppSetting.get_default('ldap_service'))
             if not config:
                 return handle_response(error='请在系统设置中配置LDAP后再尝试通过该方式登录')
             ldap = LDAP(**config)
