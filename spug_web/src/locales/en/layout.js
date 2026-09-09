@@ -26,6 +26,8 @@ const dict = {
   '请求异常: {}': 'Request error: {}',
 
   // Layout / notifications
+  // 官方安装脚本创建的默认管理员昵称，右上角与欢迎页按语言显示
+  '管理员': 'Administrator',
   '知道了': 'Got it',
   '全部 已读': 'Mark all as read',
   '检测到您在移动设备上访问，请使用横屏模式。': 'Mobile device detected, please use landscape mode.',

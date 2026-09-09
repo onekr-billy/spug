@@ -36,7 +36,7 @@ class Store {
 
   @computed get ovDataSource() {
     let records = this.overviews;
-    if (this.f_type) records = records.filter(x => x.type === this.f_type);
+    if (this.f_type) records = records.filter(x => x.type_alias === this.f_type);
     if (this.f_group) records = records.filter(x => x.group === this.f_group);
     if (this.f_name) records = records.filter(x => includes(x.name, this.f_name));
     return records

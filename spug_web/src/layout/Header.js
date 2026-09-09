@@ -93,7 +93,7 @@ export default function (props) {
         <Dropdown menu={userMenu} style={{background: '#000'}}>
           <span className={styles.action}>
             <Avatar size="small" src={avatar} style={{marginRight: 8}}/>
-            {localStorage.getItem('nickname')}
+            {t(localStorage.getItem('nickname'))}
           </span>
         </Dropdown>
       </div>

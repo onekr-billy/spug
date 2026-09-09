@@ -252,7 +252,7 @@ export default observer(function () {
               <Select.Option value="PayByTraffic">{t('按流量计费')}</Select.Option>
               <Select.Option value="Other">{t('其他')}</Select.Option>
             </Select>
-          ) : host.internet_charge_type_alisa}
+          ) : host.internet_charge_type_alias}
         </Descriptions.Item>
         <Descriptions.Item label={t('创建时间')}>
           {edit ? (

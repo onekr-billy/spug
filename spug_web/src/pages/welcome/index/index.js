@@ -10,7 +10,7 @@ import { t } from 'libs';
 export default function (props) {
   return (
     <Card>
-      <div>{t('{}, 欢迎你', localStorage.getItem('nickname'))}</div>
+      <div>{t('{}, 欢迎你', t(localStorage.getItem('nickname')))}</div>
     </Card>
   )
 }

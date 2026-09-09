@@ -76,7 +76,7 @@ class HostExtend(models.Model, ModelMixin):
         tmp['private_ip_address'] = json.loads(self.private_ip_address)
         tmp['public_ip_address'] = json.loads(self.public_ip_address)
         tmp['instance_charge_type_alias'] = self.get_instance_charge_type_display()
-        tmp['internet_charge_type_alisa'] = self.get_internet_charge_type_display()
+        tmp['internet_charge_type_alias'] = self.get_internet_charge_type_display()
         return tmp
 
     class Meta:

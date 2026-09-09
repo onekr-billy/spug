@@ -119,7 +119,7 @@ def get_overview(request):
                 'id': f'{item.id}_{key}',
                 'group': item.group,
                 'name': item.name,
-                'type': item.get_type_display(),
+                'type_alias': item.get_type_display(),
                 'target': key,
                 'desc': item.desc,
                 'status': '0',
